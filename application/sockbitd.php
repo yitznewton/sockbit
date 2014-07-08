@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/vendor/autoload.php';
 
-use EasyBib\SockBit\Message\NoteUpdateAnnouncer;
+use EasyBib\SockBit\Message\NoteAnnouncer;
 use EasyBib\SockBit\Repository\SqlNoteRepository;
 use PhpAmqpLib\Connection\AMQPConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -10,7 +10,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 $rabbitConnection = new AMQPConnection('localhost', 5672, 'guest', 'guest');
 $noteRepo = new SqlNoteRepository();
 
-$announcer = new NoteUpdateAnnouncer($rabbitConnection);
+$announcer = new NoteAnnouncer($rabbitConnection);
 
 $jobs = [
     'update_note' => function($data) use ($noteRepo, $announcer) {

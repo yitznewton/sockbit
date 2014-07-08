@@ -9,16 +9,20 @@ socket.on('note_updated', function(msg) {
 var noteContainer = document.getElementById('notes');
 var textareas = {};
 
-var notes = [
-    {
-        id: 1,
-        text: "jim the slim"
-    },
-    {
-        id: 2,
-        text: "nate the late"
-    }
-];
+var getNotes = function() {
+    return [
+        {
+            id: 1,
+            text: "jim the slim"
+        },
+        {
+            id: 2,
+            text: "nate the late"
+        }
+    ];
+};
+
+var notes = getNotes();
 
 for (var i in notes) {
     var note = notes[i];

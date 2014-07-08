@@ -13,7 +13,7 @@ app.get('/index.js', function(req, rsp) {
 });
 
 var jobsQueueName = 'sockbit_work',
-    announceQueueName = 'note_updates',
+    announceQueueName = 'sockbit_announce',
     jobsChannel,
     announceQueue;
 
