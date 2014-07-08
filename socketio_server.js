@@ -8,6 +8,10 @@ app.get('/', function(req, rsp) {
     rsp.sendfile('index.html');
 });
 
+app.get('/index.js', function(req, rsp) {
+    rsp.sendfile('index.js');
+});
+
 var jobsQueueName = 'sockbit_work',
     announceQueueName = 'note_updates',
     jobsChannel,
