@@ -1,0 +1,22 @@
+{
+    "name": "yitznewton/sockbit",
+    "description": "SockBit: a Socket.IO + RabbitMQ proof of concept",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Yitzchak Schaffer",
+            "email": "yitzchak@imagineeasy.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "videlalvaro/php-amqplib": "2.*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-0": {
+            "EasyBib\\SockBit\\": "src/"
+        }
+    }
+}

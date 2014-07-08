@@ -1,0 +1,4 @@
+/.vagrant
+/application/*.sqlite3
+/node_modules
+vendor

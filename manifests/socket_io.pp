@@ -1,0 +1,12 @@
+package {'openssh-server':}
+package {'git-core':}
+package {'build-essential':}
+package {'gcc':}
+package {'tree':}
+package {'rabbitmq-server':}
+package {'sqlite3':}
+package {'php5-dev':}
+package {'php5-cli':}
+package {'php5-sqlite':}
+package {'nodejs':}
+package {'npm':}

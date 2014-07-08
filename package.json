@@ -1,0 +1,19 @@
+{
+  "name": "sockbit",
+  "version": "0.0.1",
+  "description": "Socket.IO + RabbitMQ proof of concept",
+  "main": "socketio_server.js",
+  "dependencies": {
+    "amqplib": "~0.2.0",
+    "express": "~4.5.0",
+    "socket.io": "~1.0.6",
+    "when": "~3.3.1"
+  },
+  "repository": "git@github.com:yitznewton/sockbit.git",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yitznewton",
+  "license": "proprietary"
+}
