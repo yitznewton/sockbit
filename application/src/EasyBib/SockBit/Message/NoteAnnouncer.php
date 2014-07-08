@@ -4,9 +4,9 @@ namespace EasyBib\SockBit\Message;
 
 use PhpAmqpLib\Message\AMQPMessage;
 
-class NoteUpdateAnnouncer
+class NoteAnnouncer
 {
-    const CHANNEL_NAME = 'note_updates';
+    const CHANNEL_NAME = 'sockbit_announce';
 
     private $channel;
 

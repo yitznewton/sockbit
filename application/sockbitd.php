@@ -2,31 +2,36 @@
 
 require_once __DIR__.'/vendor/autoload.php';
 
-use EasyBib\SockBit\Message\NoteUpdateAnnouncer;
-use EasyBib\SockBit\Message\NoteUpdateDecoder;
+use EasyBib\SockBit\Message\NoteAnnouncer;
 use EasyBib\SockBit\Repository\SqlNoteRepository;
 use PhpAmqpLib\Connection\AMQPConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
 $rabbitConnection = new AMQPConnection('localhost', 5672, 'guest', 'guest');
-$decoder = new NoteUpdateDecoder();
 $noteRepo = new SqlNoteRepository();
 
-$announcer = new NoteUpdateAnnouncer($rabbitConnection);
+$announcer = new NoteAnnouncer($rabbitConnection);
 
-$job = function ($message) use ($decoder, $noteRepo, $announcer) {
+$jobs = [
+    'update_note' => function($data) use ($noteRepo, $announcer) {
+        $result = $noteRepo->update($data['note_id'], $data);
+        $announcer->announce($result);
+    },
+];
+
+$job = function ($message) use ($noteRepo, $announcer, $jobs) {
     $messageText = $message->body;
     echo 'Processing message: ' . $messageText . "\n";
-    $decodedNote = $decoder->decode($messageText);
-    
-    if ($decodedNote) {
-        $noteRepo->update($decodedNote['note_id'], $decodedNote);
+    $decodedMessage = json_decode($messageText, true);
+
+    if ($decodedMessage) {
+        $toExecute = $jobs['update_note'];
+        $toExecute($decodedMessage[1]);
     } else {
         echo "Invalid message\n";
     }
 
     $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
-    $announcer->announce($decodedNote);
 };
 
 $jobsChannel = $rabbitConnection->channel();
