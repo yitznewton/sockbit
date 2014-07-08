@@ -12,7 +12,11 @@ var textareas = {};
 var notes = [
     {
         id: 1,
-        text: "jim the bob"
+        text: "jim the slim"
+    },
+    {
+        id: 2,
+        text: "nate the late"
     }
 ];
 
@@ -23,14 +27,16 @@ for (var i in notes) {
     textarea.value = note.text;
     noteContainer.appendChild(textarea);
     textareas[note.id] = textarea;
-    
-    textarea.addEventListener('blur', function() {
-        console.log('updating note: ' + this.value);
-        socket.emit('update_note', {
-            note_id: note.id,
-            project_id: 1,
-            text: this.value
-        });
-    });
+
+    textarea.addEventListener('blur', (function(note) {
+        return function() {
+            console.log('updating note ' + note.id + ': ' + this.value);
+            socket.emit('update_note', {
+                note_id: note.id,
+                project_id: 1,
+                text: this.value
+            });
+        };
+    })(note));
 }
 
