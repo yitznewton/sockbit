@@ -21,7 +21,7 @@ class SqlNoteRepository implements NoteRepository
     public function getAll($projectId)
     {
         $projectId = $this->sanitizeId($projectId);
-        $q = 'SELECT id, text FROM note WHERE project_id = ?';
+        $q = 'SELECT id, text, project_id FROM note WHERE project_id = ?';
         $stmt = $this->pdo->prepare($q);
         $stmt->execute([$projectId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
