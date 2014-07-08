@@ -31,7 +31,7 @@ var prepRabbitAnnounceChannel = function(conn) {
 };
 
 var forwardJob = function(jobName, socket) {
-    console.log('forwarding ' + jobName + ' job requests to rabbit');
+    console.log('registering forward of ' + jobName + ' job requests to rabbit');
 
     socket.on(jobName, function(message) {
         var jobString = JSON.stringify([jobName, message]);
@@ -56,14 +56,17 @@ amqp.connect('amqp://localhost').then(function(conn) {
 
             announceChannel.consume(announceQueue, function(message) {
                 var update = JSON.parse(message.content);
+                var announcementName = update[0];
+                var data = update[1];
                 console.log('receiving announcement from rabbit: ' + message.content);
                 console.log('sending update to browser clients');
-                io.emit('note_updated', update);
+                io.emit(announcementName, data);
             }, {noack: true});
 
             console.log('listening for announcements from rabbit');
 
             forwardJob('update_note', socket);
+            forwardJob('get_notes', socket);
         });
     });
 });

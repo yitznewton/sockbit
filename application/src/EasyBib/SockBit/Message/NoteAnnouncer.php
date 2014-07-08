@@ -21,9 +21,9 @@ class NoteAnnouncer
         $this->channel->close();
     }
 
-    public function announce(array $data)
+    public function announce($announcementType, array $data)
     {
-        $json = json_encode($data);
+        $json = json_encode([$announcementType, $data]);
         printf("Broadcasting to rabbit %s: %s\n", self::CHANNEL_NAME, $json);
         $message = new AMQPMessage($json);
         $this->channel->basic_publish($message, self::CHANNEL_NAME);

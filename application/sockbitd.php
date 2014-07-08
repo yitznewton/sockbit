@@ -15,18 +15,31 @@ $announcer = new NoteAnnouncer($rabbitConnection);
 $jobs = [
     'update_note' => function($data) use ($noteRepo, $announcer) {
         $result = $noteRepo->update($data['note_id'], $data);
-        $announcer->announce($result);
+        $announcer->announce('note_updated', $result);
+    },
+    'get_notes' => function($data) use ($noteRepo, $announcer) {
+        $projectId = $data['project_id'];
+        $announcer->announce('project_notes', [
+            'project_id' => $projectId,
+            'notes' => $noteRepo->getAll($projectId),
+        ]);
     },
 ];
 
-$job = function ($message) use ($noteRepo, $announcer, $jobs) {
+$job = function ($message) use ($noteRepo, $jobs) {
     $messageText = $message->body;
     echo 'Processing message: ' . $messageText . "\n";
     $decodedMessage = json_decode($messageText, true);
 
     if ($decodedMessage) {
-        $toExecute = $jobs['update_note'];
-        $toExecute($decodedMessage[1]);
+        $jobName = $decodedMessage[0];
+
+        if (!isset($jobs[$jobName])) {
+            echo "Invalid message\n";
+        } else {
+            $toExecute = $jobs[$jobName];
+            $toExecute($decodedMessage[1]);
+        }
     } else {
         echo "Invalid message\n";
     }
