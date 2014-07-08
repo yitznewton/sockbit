@@ -25,6 +25,10 @@ var addNote = function(note) {
 }
 
 var initializeNotes = function(msg) {
+    if (msg.project_id != projectId) {
+        return;
+    }
+
     console.log('loading notes from server');
     socket.removeListener('project_notes', initializeNotes);
 
