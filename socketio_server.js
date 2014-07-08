@@ -26,6 +26,17 @@ var prepRabbitAnnounceChannel = function(conn) {
     });
 };
 
+var forwardJob = function(jobName, socket) {
+    console.log('forwarding ' + jobName + ' job requests to rabbit');
+
+    socket.on(jobName, function(message) {
+        var jobString = JSON.stringify([jobName, message]);
+        console.log('forwarding job to rabbit: ' + jobString);
+        console.log('sending job to rabbit');
+        jobsChannel.sendToQueue(jobsQueueName, new Buffer(jobString), {deliveryMode:true});
+    });
+};
+
 amqp.connect('amqp://localhost').then(function(conn) {
     return conn.createChannel().then(function(ch) {
         jobsChannel = ch;
@@ -48,12 +59,7 @@ amqp.connect('amqp://localhost').then(function(conn) {
 
             console.log('listening for announcements from rabbit');
 
-            socket.on('update_note', function(message) {
-                console.log('received request to update note: ' + messageString);
-                var messageString = JSON.stringify(message);
-                console.log('sending update job to rabbit');
-                jobsChannel.sendToQueue(jobsQueueName, new Buffer(messageString), {deliveryMode:true});
-            });
+            forwardJob('update_note', socket);
         });
     });
 });
