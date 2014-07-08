@@ -29,9 +29,8 @@ the following occurs:
 
 ### Not implemented
 
-* This example has a lot of hardcoded values, e.g. `note.id` in the
-  browser
 * Access control
+* Error handling
 * Socket.IO rooms, i.e. only forwarding the broadcasts to the browsers
   viewing the affected project
 
