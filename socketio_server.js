@@ -14,8 +14,7 @@ app.get('/index.js', function(req, rsp) {
 
 var jobsQueueName = 'sockbit_work',
     announceQueueName = 'sockbit_announce',
-    jobsChannel,
-    announceQueue;
+    jobsChannel;
 
 var prepRabbitAnnounceChannel = function(conn) {
     return conn.createChannel().then(function(channel) {
@@ -42,28 +41,39 @@ var forwardJob = function(jobName, socket) {
 };
 
 amqp.connect('amqp://localhost').then(function(conn) {
-    return conn.createChannel().then(function(ch) {
+    when(conn.createChannel()).then(function(ch) {
         jobsChannel = ch;
         return ch.assertQueue(jobsQueueName, {durable: true});
     }).then(function() {
-        console.log('ready to post to rabbit jobs channel');
-        return prepRabbitAnnounceChannel(conn);
+        return conn.createChannel();
     }).then(function(announceChannel) {
-        console.log('ready to listen for announcements from rabbit');
+        announceChannel.assertExchange(announceQueueName, 'fanout', {durable: false});
+        return announceChannel;
+    }).then(function(announceChannel) {
+        var queueOk = announceChannel.assertQueue('', {exclusive: true});
+        return [announceChannel, queueOk];
+    }).then(function(objs) {
+        var announceChannel = objs[0];
+        announceQueue = objs[1].queue;
+        announceChannel.bindQueue(announceQueue, announceQueueName, '');
+        return [announceChannel, announceQueue];
+    }).then(function(objs) {
+        var announceChannel = objs[0];
+        var announceQueue = objs[1];
+
+        announceChannel.consume(announceQueue, function(message) {
+            var update = JSON.parse(message.content);
+            var announcementName = update[0];
+            var data = update[1];
+            console.log('receiving announcement from rabbit: ' + message.content);
+            console.log('sending update to browser clients');
+            io.emit(announcementName, data);
+        }, {noack: true});
+    }).then(function() {
+        console.log('listening for announcements from rabbit');
 
         io.on('connection', function(socket) {
             console.log('a user connected');
-
-            announceChannel.consume(announceQueue, function(message) {
-                var update = JSON.parse(message.content);
-                var announcementName = update[0];
-                var data = update[1];
-                console.log('receiving announcement from rabbit: ' + message.content);
-                console.log('sending update to browser clients');
-                io.emit(announcementName, data);
-            }, {noack: true});
-
-            console.log('listening for announcements from rabbit');
 
             forwardJob('update_note', socket);
             forwardJob('get_notes', socket);
