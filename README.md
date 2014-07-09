@@ -31,6 +31,7 @@ the following occurs:
 
 * Access control
 * Error handling
+* http://en.wikipedia.org/wiki/Operational_transformation for edit conflicts
 * Socket.IO rooms, i.e. only forwarding the broadcasts to the browsers
   viewing the affected project
 
