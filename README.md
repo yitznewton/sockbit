@@ -1,5 +1,10 @@
 # SockBit: a Socket.IO + RabbitMQ proof of concept
 
+## Blog post
+
+This code accompanies my blog post at http://dev.imagineeasy.com/post/91224992649/the-realtime-web-with-socket-io-and-rabbitmq
+which I have [copied into the `docs` directory in this repo](docs/blogpost.md).
+
 ## Summary
 
 This project shows how Socket.IO can be used as a browser-server message
@@ -34,13 +39,6 @@ the following occurs:
 * http://en.wikipedia.org/wiki/Operational_transformation for edit conflicts
 * Socket.IO rooms, i.e. only forwarding the broadcasts to the browsers
   viewing the affected project
-
-## Installation
-
-```bash
-$ vagrant up
-$ vagrant ssh -c /vagrant/install.sh
-```
 
 ## Running
 
